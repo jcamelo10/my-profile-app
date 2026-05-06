@@ -1,5 +1,4 @@
 "use client"
-
 import { useSession, signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
@@ -7,7 +6,7 @@ import { useLang } from "@/lib/LangContext"
 import { t } from "@/lib/i18n"
 
 export default function WelcomePage() {
-  const { data: session, status } = useSession()
+  const { status } = useSession()
   const router = useRouter()
   const { lang, setLang } = useLang()
 
@@ -15,24 +14,28 @@ export default function WelcomePage() {
     if (status === "authenticated") router.push("/dashboard")
   }, [status, router])
 
-  if (status === "loading") return <div style={{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"100dvh"}}><p>Cargando...</p></div>
+  if (status === "loading") return (
+    <div style={{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"100dvh"}}>
+      <p className="text-muted">Cargando...</p>
+    </div>
+  )
 
   return (
-    <div style={{display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",textAlign:"center",background:"linear-gradient(180deg, #ffffff 0%, #f0f3ff 100%)",minHeight:"100dvh",padding:"2rem"}}>
-      <div style={{width:80,height:80,background:"#304FFE",borderRadius:"1.5rem",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 1rem",boxShadow:"0 10px 15px -3px rgba(0,0,0,0.08)"}}>
+    <div style={{display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",textAlign:"center",background:"linear-gradient(180deg,#ffffff 0%,#f0f3ff 100%)",minHeight:"100dvh",padding:"var(--space-8) var(--space-6)"}}>
+      <div style={{width:80,height:80,background:"var(--color-primary)",borderRadius:"var(--radius-2xl)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto",marginBottom:"var(--space-3)",boxShadow:"var(--shadow-lg)"}}>
         <span style={{fontSize:"2.5rem"}}>⚽</span>
       </div>
-      <h1 style={{fontSize:"2.25rem",fontWeight:800,color:"#000001",marginBottom:"0.5rem"}}>POLLON</h1>
-      <p style={{color:"#757575",marginBottom:"0.25rem",fontWeight:500}}>{t(lang,"welcome.subtitle")}</p>
-      <p style={{color:"#9E9E9E",marginBottom:"2.5rem",maxWidth:280}}>{t(lang,"welcome.description")}</p>
-      <div style={{display:"flex",gap:"0.5rem",marginBottom:"2.5rem",fontSize:"1.5rem",opacity:0.8}}>🇺🇸 🇨🇦 🇲🇽</div>
-      <div style={{width:"100%",maxWidth:320,display:"flex",flexDirection:"column",gap:"0.75rem"}}>
+      <h1 style={{fontSize:"var(--font-size-4xl)",fontWeight:800,letterSpacing:"-0.02em",color:"var(--color-secondary)",marginBottom:"var(--space-2)"}}>POLLON</h1>
+      <p style={{fontSize:"var(--font-size-md)",color:"var(--color-gray-600)",marginBottom:"var(--space-1)",fontWeight:500}}>{t(lang,"welcome.subtitle")}</p>
+      <p style={{fontSize:"var(--font-size-base)",color:"var(--color-gray-500)",marginBottom:"var(--space-10)",maxWidth:280}}>{t(lang,"welcome.description")}</p>
+      <div style={{display:"flex",gap:"var(--space-2)",marginBottom:"var(--space-10)",fontSize:"1.5rem",opacity:0.8}}>🇺🇸 🇨🇦 🇲🇽</div>
+      <div style={{width:"100%",maxWidth:320,display:"flex",flexDirection:"column",gap:"var(--space-3)"}}>
         <button className="btn btn--primary btn--lg btn--full" onClick={() => signIn("google")}>{t(lang,"welcome.getStarted")}</button>
         <button className="btn btn--secondary btn--lg btn--full" onClick={() => signIn("google")}>{t(lang,"welcome.login")}</button>
       </div>
-      <div style={{marginTop:"2.5rem",display:"flex",gap:"1rem"}}>
-        <button className={"btn btn--sm " + (lang==="en" ? "btn--primary" : "btn--ghost")} onClick={() => setLang("en")}>EN</button>
-        <button className={"btn btn--sm " + (lang==="es" ? "btn--primary" : "btn--ghost")} onClick={() => setLang("es")}>ES</button>
+      <div style={{marginTop:"var(--space-10)",display:"flex",gap:"var(--space-4)"}}>
+        <button className={"btn btn--sm "+(lang==="en"?"btn--primary":"btn--ghost")} onClick={()=>setLang("en")}>EN</button>
+        <button className={"btn btn--sm "+(lang==="es"?"btn--primary":"btn--ghost")} onClick={()=>setLang("es")}>ES</button>
       </div>
     </div>
   )

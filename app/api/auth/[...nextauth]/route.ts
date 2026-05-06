@@ -2,6 +2,7 @@ import NextAuth from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import { connectDB } from "@/lib/mongodb"
 import User from "@/lib/models/User"
+import { seedMatchesOnce } from "@/lib/seedOnStartup"
 
 const handler = NextAuth({
   providers: [
@@ -14,12 +15,10 @@ const handler = NextAuth({
   callbacks: {
     async signIn({ user }) {
       await connectDB()
+      await seedMatchesOnce()
       const existing = await User.findOne({ email: user.email })
       if (!existing) {
-        await User.create({
-          email: user.email,
-          fullName: user.name || "",
-        })
+        await User.create({ email: user.email, fullName: user.name || "" })
       }
       return true
     },
@@ -27,9 +26,7 @@ const handler = NextAuth({
       return session
     },
   },
-  pages: {
-    signIn: "/",
-  },
+  pages: { signIn: "/" },
 })
 
 export { handler as GET, handler as POST }
